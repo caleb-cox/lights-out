@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Lights Out</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			html {
+				height: 100%;
+			}
+
+			body {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				background-color: #333333;
+				height: 100%;
+			}
+
+			.wrapper {
+				display: grid;
+				grid: repeat(5, 100px) / repeat(5, 100px);
+				grid-gap: 5px;
+				background-color: #000000;
+				padding:5px;
+				border-radius: 5px;
+			}
+
+			.wrapper div {
+				background-color: #111111;
+				border-radius: 5px;
+			}
+
+			.cell.on {
+				background: radial-gradient(#ff5599 5%, #ff1111 40%, #441111 90%, #111111);
+			}
+
+			.reset {
+				font-family: monospace;
+				font-size: 20px;
+				background-color: #119911;
+				box-sizing: content-box;
+				height: 40px;
+				width: 140px;	
+				padding: 0;
+				border: 5px solid black;
+				border-radius: 5px;
+				margin-top: 30px;
+			}
+
+			.reset:focus,
+			.reset:hover {
+				background-color: #33aa33;
+				outline: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div data-x="1" data-y="1" class="cell"></div>
+			<div data-x="2" data-y="1" class="cell"></div>
+			<div data-x="3" data-y="1" class="cell"></div>
+			<div data-x="4" data-y="1" class="cell"></div>
+			<div data-x="5" data-y="1" class="cell"></div>
+			<div data-x="1" data-y="2" class="cell"></div>
+			<div data-x="2" data-y="2" class="cell"></div>
+			<div data-x="3" data-y="2" class="cell"></div>
+			<div data-x="4" data-y="2" class="cell"></div>
+			<div data-x="5" data-y="2" class="cell"></div>
+			<div data-x="1" data-y="3" class="cell"></div>
+			<div data-x="2" data-y="3" class="cell"></div>
+			<div data-x="3" data-y="3" class="cell"></div>
+			<div data-x="4" data-y="3" class="cell"></div>
+			<div data-x="5" data-y="3" class="cell"></div>
+			<div data-x="1" data-y="4" class="cell"></div>
+			<div data-x="2" data-y="4" class="cell"></div>
+			<div data-x="3" data-y="4" class="cell"></div>
+			<div data-x="4" data-y="4" class="cell"></div>
+			<div data-x="5" data-y="4" class="cell"></div>
+			<div data-x="1" data-y="5" class="cell"></div>
+			<div data-x="2" data-y="5" class="cell"></div>
+			<div data-x="3" data-y="5" class="cell"></div>
+			<div data-x="4" data-y="5" class="cell"></div>
+			<div data-x="5" data-y="5" class="cell"></div>
+		</div>
+		<button class="reset">reset</button>
+		<script>
+			const cells = Array.from(document.querySelectorAll('.wrapper div'));
+
+			function getLocation(dataset) {
+				return {
+					x: parseInt(dataset.x, 10),
+					y: parseInt(dataset.y, 10)
+				}
+			}
+
+			function isNeighbor(cellLocation, activeLocation) {
+				const distance = Math.abs(activeLocation.x - cellLocation.x) + Math.abs(activeLocation.y - cellLocation.y);
+				return distance <= 1;
+			}
+
+			function toggleNeighbors(active) {
+				const activeLocation = getLocation(active.dataset);
+				
+				const neighbors = cells.filter(cell => {
+					const cellLocation = getLocation(cell.dataset);
+					return isNeighbor(cellLocation, activeLocation);
+				});
+				
+				neighbors.forEach(neighbor => neighbor.classList.toggle('on'));
+			}
+
+			function reset() {
+				cells.forEach(cell => {
+					if (Math.random() <= 0.2) toggleNeighbors(cell);
+				});
+			}
+
+			document.querySelector('.reset').addEventListener('click', reset);
+			cells.forEach(cell => cell.addEventListener('click', (event) => toggleNeighbors(event.srcElement)));
+
+			reset();
+		</script>
+	</body>
+</html>
